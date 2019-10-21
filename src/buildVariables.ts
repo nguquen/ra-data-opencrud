@@ -213,25 +213,27 @@ const buildUpdateVariables = (introspectionResults: IntrospectionResult) => (
     if (Array.isArray(params.data[key])) {
       //TODO: Make connect, disconnect and update overridable
       //TODO: Make updates working
-      const {
-        fieldsToAdd,
-        fieldsToRemove /* fieldsToUpdate */
-      } = computeFieldsToAddRemoveUpdate(
-        params.previousData[`${key}Ids`],
-        params.data[`${key}Ids`]
-      );
+      if (params.data[`${key}Ids`] && params.previousData[`${key}Ids`]) {
+        const {
+          fieldsToAdd,
+          fieldsToRemove /* fieldsToUpdate */
+        } = computeFieldsToAddRemoveUpdate(
+          params.previousData[`${key}Ids`],
+          params.data[`${key}Ids`]
+        );
 
-      return {
-        ...acc,
-        data: {
-          ...acc.data,
-          [key]: {
-            [PRISMA_CONNECT]: fieldsToAdd,
-            [PRISMA_DISCONNECT]: fieldsToRemove
-            //[PRISMA_UPDATE]: fieldsToUpdate
+        return {
+          ...acc,
+          data: {
+            ...acc.data,
+            [key]: {
+              [PRISMA_CONNECT]: fieldsToAdd,
+              [PRISMA_DISCONNECT]: fieldsToRemove
+              //[PRISMA_UPDATE]: fieldsToUpdate
+            }
           }
-        }
-      };
+        };
+      }
     }
 
     if (isObject(params.data[key]) && inputType.kind !== "SCALAR") {
@@ -307,17 +309,19 @@ const buildCreateVariables = (introspectionResults: IntrospectionResult) => (
     }
 
     if (Array.isArray(params.data[key])) {
-      return {
-        ...acc,
-        data: {
-          ...acc.data,
-          [key]: {
-            [PRISMA_CONNECT]: params.data[`${key}Ids`].map((id: string) => ({
-              id
-            }))
+      if (params.data[`${key}Ids`]) {
+        return {
+          ...acc,
+          data: {
+            ...acc.data,
+            [key]: {
+              [PRISMA_CONNECT]: params.data[`${key}Ids`].map((id: string) => ({
+                id
+              }))
+            }
           }
-        }
-      };
+        };
+      }
     }
 
     if (isObject(params.data[key]) && inputType.kind !== "SCALAR") {

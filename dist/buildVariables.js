@@ -108,11 +108,13 @@ var buildUpdateVariables = function (introspectionResults) { return function (re
         if (Array.isArray(params.data[key])) {
             //TODO: Make connect, disconnect and update overridable
             //TODO: Make updates working
-            var _f = computeAddRemoveUpdate_1.computeFieldsToAddRemoveUpdate(params.previousData[key + "Ids"], params.data[key + "Ids"]), fieldsToAdd = _f.fieldsToAdd, fieldsToRemove = _f.fieldsToRemove /* fieldsToUpdate */;
-            return __assign({}, acc, { data: __assign({}, acc.data, (_a = {}, _a[key] = (_b = {},
-                    _b[mutations_1.PRISMA_CONNECT] = fieldsToAdd,
-                    _b[mutations_1.PRISMA_DISCONNECT] = fieldsToRemove,
-                    _b), _a)) });
+            if (params.data[key + "Ids"] && params.previousData[key + "Ids"]) {
+                var _f = computeAddRemoveUpdate_1.computeFieldsToAddRemoveUpdate(params.previousData[key + "Ids"], params.data[key + "Ids"]), fieldsToAdd = _f.fieldsToAdd, fieldsToRemove = _f.fieldsToRemove /* fieldsToUpdate */;
+                return __assign({}, acc, { data: __assign({}, acc.data, (_a = {}, _a[key] = (_b = {},
+                        _b[mutations_1.PRISMA_CONNECT] = fieldsToAdd,
+                        _b[mutations_1.PRISMA_DISCONNECT] = fieldsToRemove,
+                        _b), _a)) });
+            }
         }
         if (isObject_1.default(params.data[key]) && inputType.kind !== "SCALAR") {
             var fieldsToUpdate = buildReferenceField({
@@ -152,11 +154,13 @@ var buildCreateVariables = function (introspectionResults) { return function (re
             return acc;
         }
         if (Array.isArray(params.data[key])) {
-            return __assign({}, acc, { data: __assign({}, acc.data, (_a = {}, _a[key] = (_b = {},
-                    _b[mutations_1.PRISMA_CONNECT] = params.data[key + "Ids"].map(function (id) { return ({
-                        id: id
-                    }); }),
-                    _b), _a)) });
+            if (params.data[key + "Ids"]) {
+                return __assign({}, acc, { data: __assign({}, acc.data, (_a = {}, _a[key] = (_b = {},
+                        _b[mutations_1.PRISMA_CONNECT] = params.data[key + "Ids"].map(function (id) { return ({
+                            id: id
+                        }); }),
+                        _b), _a)) });
+            }
         }
         if (isObject_1.default(params.data[key]) && inputType.kind !== "SCALAR") {
             var fieldsToConnect = buildReferenceField({
