@@ -94,7 +94,7 @@ var buildReferenceField = function (_a) {
 };
 var buildUpdateVariables = function (introspectionResults) { return function (resource, aorFetchType, params) {
     return Object.keys(params.data).reduce(function (acc, key) {
-        var _a, _b, _c, _d, _e;
+        var _a, _b, _c, _d, _e, _f;
         // Put id field in a where object
         if (key === "id" && params.data[key]) {
             return __assign({}, acc, { where: {
@@ -109,11 +109,16 @@ var buildUpdateVariables = function (introspectionResults) { return function (re
             //TODO: Make connect, disconnect and update overridable
             //TODO: Make updates working
             if (params.data[key + "Ids"] && params.previousData[key + "Ids"]) {
-                var _f = computeAddRemoveUpdate_1.computeFieldsToAddRemoveUpdate(params.previousData[key + "Ids"], params.data[key + "Ids"]), fieldsToAdd = _f.fieldsToAdd, fieldsToRemove = _f.fieldsToRemove /* fieldsToUpdate */;
+                var _g = computeAddRemoveUpdate_1.computeFieldsToAddRemoveUpdate(params.previousData[key + "Ids"], params.data[key + "Ids"]), fieldsToAdd = _g.fieldsToAdd, fieldsToRemove = _g.fieldsToRemove /* fieldsToUpdate */;
                 return __assign({}, acc, { data: __assign({}, acc.data, (_a = {}, _a[key] = (_b = {},
                         _b[mutations_1.PRISMA_CONNECT] = fieldsToAdd,
                         _b[mutations_1.PRISMA_DISCONNECT] = fieldsToRemove,
                         _b), _a)) });
+            }
+            else {
+                return __assign({}, acc, { data: __assign({}, acc.data, (_c = {}, _c[key] = {
+                        set: params.data[key]
+                    }, _c)) });
             }
         }
         if (isObject_1.default(params.data[key]) && inputType.kind !== "SCALAR") {
@@ -129,20 +134,20 @@ var buildUpdateVariables = function (introspectionResults) { return function (re
                 return acc;
             }
             // Else, connect the nodes
-            return __assign({}, acc, { data: __assign({}, acc.data, (_c = {}, _c[key] = (_d = {}, _d[mutations_1.PRISMA_CONNECT] = __assign({}, fieldsToUpdate), _d), _c)) });
+            return __assign({}, acc, { data: __assign({}, acc.data, (_d = {}, _d[key] = (_e = {}, _e[mutations_1.PRISMA_CONNECT] = __assign({}, fieldsToUpdate), _e), _d)) });
         }
         var type = introspectionResults.types.find(function (t) { return t.name === resource.type.name; });
         var isInField = type.fields.find(function (t) { return t.name === key; });
         if (!!isInField) {
             // Rest should be put in data object
-            return __assign({}, acc, { data: __assign({}, acc.data, (_e = {}, _e[key] = params.data[key], _e)) });
+            return __assign({}, acc, { data: __assign({}, acc.data, (_f = {}, _f[key] = params.data[key], _f)) });
         }
         return acc;
     }, {});
 }; };
 var buildCreateVariables = function (introspectionResults) { return function (resource, aorFetchType, params) {
     return Object.keys(params.data).reduce(function (acc, key) {
-        var _a, _b, _c, _d, _e;
+        var _a, _b, _c, _d, _e, _f;
         // Put id field in a where object
         if (key === "id" && params.data[key]) {
             return __assign({}, acc, { where: {
@@ -161,6 +166,11 @@ var buildCreateVariables = function (introspectionResults) { return function (re
                         }); }),
                         _b), _a)) });
             }
+            else {
+                return __assign({}, acc, { data: __assign({}, acc.data, (_c = {}, _c[key] = {
+                        set: params.data[key]
+                    }, _c)) });
+            }
         }
         if (isObject_1.default(params.data[key]) && inputType.kind !== "SCALAR") {
             var fieldsToConnect = buildReferenceField({
@@ -175,13 +185,13 @@ var buildCreateVariables = function (introspectionResults) { return function (re
                 return acc;
             }
             // Else, connect the nodes
-            return __assign({}, acc, { data: __assign({}, acc.data, (_c = {}, _c[key] = (_d = {}, _d[mutations_1.PRISMA_CONNECT] = __assign({}, fieldsToConnect), _d), _c)) });
+            return __assign({}, acc, { data: __assign({}, acc.data, (_d = {}, _d[key] = (_e = {}, _e[mutations_1.PRISMA_CONNECT] = __assign({}, fieldsToConnect), _e), _d)) });
         }
         var type = introspectionResults.types.find(function (t) { return t.name === resource.type.name; });
         var isInField = type.fields.find(function (t) { return t.name === key; });
         if (isInField) {
             // Rest should be put in data object
-            return __assign({}, acc, { data: __assign({}, acc.data, (_e = {}, _e[key] = params.data[key], _e)) });
+            return __assign({}, acc, { data: __assign({}, acc.data, (_f = {}, _f[key] = params.data[key], _f)) });
         }
         return acc;
     }, {});

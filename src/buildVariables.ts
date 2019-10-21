@@ -233,6 +233,16 @@ const buildUpdateVariables = (introspectionResults: IntrospectionResult) => (
             }
           }
         };
+      } else {
+        return {
+          ...acc,
+          data: {
+            ...acc.data,
+            [key]: {
+              set: params.data[key]
+            }
+          }
+        };
       }
     }
 
@@ -318,6 +328,16 @@ const buildCreateVariables = (introspectionResults: IntrospectionResult) => (
               [PRISMA_CONNECT]: params.data[`${key}Ids`].map((id: string) => ({
                 id
               }))
+            }
+          }
+        };
+      } else {
+        return {
+          ...acc,
+          data: {
+            ...acc.data,
+            [key]: {
+              set: params.data[key]
             }
           }
         };
