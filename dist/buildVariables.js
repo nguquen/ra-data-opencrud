@@ -22,15 +22,18 @@ var mutations_1 = require("./constants/mutations");
 //TODO: Object filter weren't tested yet
 var buildGetListVariables = function (introspectionResults) { return function (resource, aorFetchType, params) {
     var filter = Object.keys(params.filter).reduce(function (acc, key) {
-        var _a, _b, _c, _d, _e, _f, _g;
+        var _a, _b, _c, _d, _e, _f, _g, _h;
         if (key === "ids") {
             return __assign({}, acc, { id_in: params.filter[key] });
         }
         if (Array.isArray(params.filter[key])) {
+            if (key.endsWith("_in")) {
+                return __assign({}, acc, (_a = {}, _a[key] = params.filter[key], _a));
+            }
             var type = introspectionResults.types.find(function (t) { return t.name === resource.type.name + "WhereInput"; });
             var inputField = type.inputFields.find(function (t) { return t.name === key; });
             if (!!inputField) {
-                return __assign({}, acc, (_a = {}, _a[key] = { id_in: params.filter[key] }, _a));
+                return __assign({}, acc, (_b = {}, _b[key] = { id_in: params.filter[key] }, _b));
             }
         }
         if (isObject_1.default(params.filter[key])) {
@@ -41,7 +44,7 @@ var buildGetListVariables = function (introspectionResults) { return function (r
                     var _a;
                     return (__assign({}, acc, (_a = {}, _a[k + "_in"] = params.filter[key][k], _a)));
                 }, {});
-                return __assign({}, acc, (_b = {}, _b[key + "_some"] = filter_1, _b));
+                return __assign({}, acc, (_c = {}, _c[key + "_some"] = filter_1, _c));
             }
         }
         var parts = key.split(".");
@@ -50,19 +53,19 @@ var buildGetListVariables = function (introspectionResults) { return function (r
                 var type = introspectionResults.types.find(function (t) { return t.name === resource.type.name + "WhereInput"; });
                 var filterSome = type.inputFields.find(function (t) { return t.name === parts[0] + "_some"; });
                 if (filterSome) {
-                    return __assign({}, acc, (_c = {}, _c[parts[0] + "_some"] = { id: params.filter[key] }, _c));
+                    return __assign({}, acc, (_d = {}, _d[parts[0] + "_some"] = { id: params.filter[key] }, _d));
                 }
-                return __assign({}, acc, (_d = {}, _d[parts[0]] = { id: params.filter[key] }, _d));
+                return __assign({}, acc, (_e = {}, _e[parts[0]] = { id: params.filter[key] }, _e));
             }
             var resourceField = resource.type.fields.find(function (f) { return f.name === parts[0]; });
             if (resourceField.type.name === "Int") {
-                return __assign({}, acc, (_e = {}, _e[key] = parseInt(params.filter[key]), _e));
+                return __assign({}, acc, (_f = {}, _f[key] = parseInt(params.filter[key]), _f));
             }
             if (resourceField.type.name === "Float") {
-                return __assign({}, acc, (_f = {}, _f[key] = parseFloat(params.filter[key]), _f));
+                return __assign({}, acc, (_g = {}, _g[key] = parseFloat(params.filter[key]), _g));
             }
         }
-        return __assign({}, acc, (_g = {}, _g[key] = params.filter[key], _g));
+        return __assign({}, acc, (_h = {}, _h[key] = params.filter[key], _h));
     }, {});
     return {
         skip: (params.pagination.page - 1) * params.pagination.perPage,
