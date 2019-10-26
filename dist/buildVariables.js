@@ -119,9 +119,7 @@ var buildUpdateVariables = function (introspectionResults) { return function (re
                         _b), _a)) });
             }
             else {
-                return __assign({}, acc, { data: __assign({}, acc.data, (_c = {}, _c[key] = {
-                        set: params.data[key]
-                    }, _c)) });
+                return __assign({}, acc, { data: __assign({}, acc.data, (_c = {}, _c[key] = params.data[key], _c)) });
             }
         }
         if (isObject_1.default(params.data[key]) && inputType.kind !== "SCALAR") {
@@ -170,9 +168,7 @@ var buildCreateVariables = function (introspectionResults) { return function (re
                         _b), _a)) });
             }
             else {
-                return __assign({}, acc, { data: __assign({}, acc.data, (_c = {}, _c[key] = {
-                        set: params.data[key]
-                    }, _c)) });
+                return __assign({}, acc, { data: __assign({}, acc.data, (_c = {}, _c[key] = params.data[key], _c)) });
             }
         }
         if (isObject_1.default(params.data[key]) && inputType.kind !== "SCALAR") {
