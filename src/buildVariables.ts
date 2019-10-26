@@ -244,9 +244,7 @@ const buildUpdateVariables = (introspectionResults: IntrospectionResult) => (
           ...acc,
           data: {
             ...acc.data,
-            [key]: {
-              set: params.data[key]
-            }
+            [key]: params.data[key]
           }
         };
       }
@@ -342,9 +340,7 @@ const buildCreateVariables = (introspectionResults: IntrospectionResult) => (
           ...acc,
           data: {
             ...acc.data,
-            [key]: {
-              set: params.data[key]
-            }
+            [key]: params.data[key]
           }
         };
       }
