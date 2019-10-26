@@ -251,16 +251,29 @@ const buildUpdateVariables = (introspectionResults: IntrospectionResult) => (
     }
 
     if (isObject(params.data[key]) && inputType.kind !== "SCALAR") {
-      const fieldsToUpdate = buildReferenceField({
-        inputArg: params.data[key],
-        introspectionResults,
-        typeName: `${resource.type.name}UpdateInput`,
-        field: key,
-        mutationType: PRISMA_CONNECT
-      });
+      try {
+        const fieldsToUpdate = buildReferenceField({
+          inputArg: params.data[key],
+          introspectionResults,
+          typeName: `${resource.type.name}UpdateInput`,
+          field: key,
+          mutationType: PRISMA_CONNECT
+        });
 
-      // If no fields in the object are valid, continue
-      if (Object.keys(fieldsToUpdate).length === 0) {
+        // If no fields in the object are valid, continue
+        if (Object.keys(fieldsToUpdate).length === 0) {
+          return acc;
+        }
+
+        // Else, connect the nodes
+        return {
+          ...acc,
+          data: {
+            ...acc.data,
+            [key]: { [PRISMA_CONNECT]: { ...fieldsToUpdate } }
+          }
+        };
+      } catch (error) {
         return {
           ...acc,
           data: {
@@ -269,15 +282,6 @@ const buildUpdateVariables = (introspectionResults: IntrospectionResult) => (
           }
         };
       }
-
-      // Else, connect the nodes
-      return {
-        ...acc,
-        data: {
-          ...acc.data,
-          [key]: { [PRISMA_CONNECT]: { ...fieldsToUpdate } }
-        }
-      };
     }
 
     const type = introspectionResults.types.find(
@@ -353,16 +357,29 @@ const buildCreateVariables = (introspectionResults: IntrospectionResult) => (
     }
 
     if (isObject(params.data[key]) && inputType.kind !== "SCALAR") {
-      const fieldsToConnect = buildReferenceField({
-        inputArg: params.data[key],
-        introspectionResults,
-        typeName: `${resource.type.name}CreateInput`,
-        field: key,
-        mutationType: PRISMA_CONNECT
-      });
+      try {
+        const fieldsToConnect = buildReferenceField({
+          inputArg: params.data[key],
+          introspectionResults,
+          typeName: `${resource.type.name}CreateInput`,
+          field: key,
+          mutationType: PRISMA_CONNECT
+        });
 
-      // If no fields in the object are valid, continue
-      if (Object.keys(fieldsToConnect).length === 0) {
+        // If no fields in the object are valid, continue
+        if (Object.keys(fieldsToConnect).length === 0) {
+          return acc;
+        }
+
+        // Else, connect the nodes
+        return {
+          ...acc,
+          data: {
+            ...acc.data,
+            [key]: { [PRISMA_CONNECT]: { ...fieldsToConnect } }
+          }
+        };
+      } catch (error) {
         return {
           ...acc,
           data: {
@@ -371,15 +388,6 @@ const buildCreateVariables = (introspectionResults: IntrospectionResult) => (
           }
         };
       }
-
-      // Else, connect the nodes
-      return {
-        ...acc,
-        data: {
-          ...acc.data,
-          [key]: { [PRISMA_CONNECT]: { ...fieldsToConnect } }
-        }
-      };
     }
 
     const type = introspectionResults.types.find(
