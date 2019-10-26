@@ -97,7 +97,7 @@ var buildReferenceField = function (_a) {
 };
 var buildUpdateVariables = function (introspectionResults) { return function (resource, aorFetchType, params) {
     return Object.keys(params.data).reduce(function (acc, key) {
-        var _a, _b, _c, _d, _e, _f;
+        var _a, _b, _c, _d, _e, _f, _g;
         // Put id field in a where object
         if (key === "id" && params.data[key]) {
             return __assign({}, acc, { where: {
@@ -112,7 +112,7 @@ var buildUpdateVariables = function (introspectionResults) { return function (re
             //TODO: Make connect, disconnect and update overridable
             //TODO: Make updates working
             if (params.data[key + "Ids"] && params.previousData[key + "Ids"]) {
-                var _g = computeAddRemoveUpdate_1.computeFieldsToAddRemoveUpdate(params.previousData[key + "Ids"], params.data[key + "Ids"]), fieldsToAdd = _g.fieldsToAdd, fieldsToRemove = _g.fieldsToRemove /* fieldsToUpdate */;
+                var _h = computeAddRemoveUpdate_1.computeFieldsToAddRemoveUpdate(params.previousData[key + "Ids"], params.data[key + "Ids"]), fieldsToAdd = _h.fieldsToAdd, fieldsToRemove = _h.fieldsToRemove /* fieldsToUpdate */;
                 return __assign({}, acc, { data: __assign({}, acc.data, (_a = {}, _a[key] = (_b = {},
                         _b[mutations_1.PRISMA_CONNECT] = fieldsToAdd,
                         _b[mutations_1.PRISMA_DISCONNECT] = fieldsToRemove,
@@ -132,23 +132,23 @@ var buildUpdateVariables = function (introspectionResults) { return function (re
             });
             // If no fields in the object are valid, continue
             if (Object.keys(fieldsToUpdate).length === 0) {
-                return acc;
+                return __assign({}, acc, { data: __assign({}, acc.data, (_d = {}, _d[key] = params.data[key], _d)) });
             }
             // Else, connect the nodes
-            return __assign({}, acc, { data: __assign({}, acc.data, (_d = {}, _d[key] = (_e = {}, _e[mutations_1.PRISMA_CONNECT] = __assign({}, fieldsToUpdate), _e), _d)) });
+            return __assign({}, acc, { data: __assign({}, acc.data, (_e = {}, _e[key] = (_f = {}, _f[mutations_1.PRISMA_CONNECT] = __assign({}, fieldsToUpdate), _f), _e)) });
         }
         var type = introspectionResults.types.find(function (t) { return t.name === resource.type.name; });
         var isInField = type.fields.find(function (t) { return t.name === key; });
         if (!!isInField) {
             // Rest should be put in data object
-            return __assign({}, acc, { data: __assign({}, acc.data, (_f = {}, _f[key] = params.data[key], _f)) });
+            return __assign({}, acc, { data: __assign({}, acc.data, (_g = {}, _g[key] = params.data[key], _g)) });
         }
         return acc;
     }, {});
 }; };
 var buildCreateVariables = function (introspectionResults) { return function (resource, aorFetchType, params) {
     return Object.keys(params.data).reduce(function (acc, key) {
-        var _a, _b, _c, _d, _e, _f;
+        var _a, _b, _c, _d, _e, _f, _g;
         // Put id field in a where object
         if (key === "id" && params.data[key]) {
             return __assign({}, acc, { where: {
@@ -181,16 +181,16 @@ var buildCreateVariables = function (introspectionResults) { return function (re
             });
             // If no fields in the object are valid, continue
             if (Object.keys(fieldsToConnect).length === 0) {
-                return acc;
+                return __assign({}, acc, { data: __assign({}, acc.data, (_d = {}, _d[key] = params.data[key], _d)) });
             }
             // Else, connect the nodes
-            return __assign({}, acc, { data: __assign({}, acc.data, (_d = {}, _d[key] = (_e = {}, _e[mutations_1.PRISMA_CONNECT] = __assign({}, fieldsToConnect), _e), _d)) });
+            return __assign({}, acc, { data: __assign({}, acc.data, (_e = {}, _e[key] = (_f = {}, _f[mutations_1.PRISMA_CONNECT] = __assign({}, fieldsToConnect), _f), _e)) });
         }
         var type = introspectionResults.types.find(function (t) { return t.name === resource.type.name; });
         var isInField = type.fields.find(function (t) { return t.name === key; });
         if (isInField) {
             // Rest should be put in data object
-            return __assign({}, acc, { data: __assign({}, acc.data, (_f = {}, _f[key] = params.data[key], _f)) });
+            return __assign({}, acc, { data: __assign({}, acc.data, (_g = {}, _g[key] = params.data[key], _g)) });
         }
         return acc;
     }, {});
