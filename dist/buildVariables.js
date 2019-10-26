@@ -123,19 +123,24 @@ var buildUpdateVariables = function (introspectionResults) { return function (re
             }
         }
         if (isObject_1.default(params.data[key]) && inputType.kind !== "SCALAR") {
-            var fieldsToUpdate = buildReferenceField({
-                inputArg: params.data[key],
-                introspectionResults: introspectionResults,
-                typeName: resource.type.name + "UpdateInput",
-                field: key,
-                mutationType: mutations_1.PRISMA_CONNECT
-            });
-            // If no fields in the object are valid, continue
-            if (Object.keys(fieldsToUpdate).length === 0) {
-                return __assign({}, acc, { data: __assign({}, acc.data, (_d = {}, _d[key] = params.data[key], _d)) });
+            try {
+                var fieldsToUpdate = buildReferenceField({
+                    inputArg: params.data[key],
+                    introspectionResults: introspectionResults,
+                    typeName: resource.type.name + "UpdateInput",
+                    field: key,
+                    mutationType: mutations_1.PRISMA_CONNECT
+                });
+                // If no fields in the object are valid, continue
+                if (Object.keys(fieldsToUpdate).length === 0) {
+                    return acc;
+                }
+                // Else, connect the nodes
+                return __assign({}, acc, { data: __assign({}, acc.data, (_d = {}, _d[key] = (_e = {}, _e[mutations_1.PRISMA_CONNECT] = __assign({}, fieldsToUpdate), _e), _d)) });
             }
-            // Else, connect the nodes
-            return __assign({}, acc, { data: __assign({}, acc.data, (_e = {}, _e[key] = (_f = {}, _f[mutations_1.PRISMA_CONNECT] = __assign({}, fieldsToUpdate), _f), _e)) });
+            catch (error) {
+                return __assign({}, acc, { data: __assign({}, acc.data, (_f = {}, _f[key] = params.data[key], _f)) });
+            }
         }
         var type = introspectionResults.types.find(function (t) { return t.name === resource.type.name; });
         var isInField = type.fields.find(function (t) { return t.name === key; });
@@ -172,19 +177,24 @@ var buildCreateVariables = function (introspectionResults) { return function (re
             }
         }
         if (isObject_1.default(params.data[key]) && inputType.kind !== "SCALAR") {
-            var fieldsToConnect = buildReferenceField({
-                inputArg: params.data[key],
-                introspectionResults: introspectionResults,
-                typeName: resource.type.name + "CreateInput",
-                field: key,
-                mutationType: mutations_1.PRISMA_CONNECT
-            });
-            // If no fields in the object are valid, continue
-            if (Object.keys(fieldsToConnect).length === 0) {
-                return __assign({}, acc, { data: __assign({}, acc.data, (_d = {}, _d[key] = params.data[key], _d)) });
+            try {
+                var fieldsToConnect = buildReferenceField({
+                    inputArg: params.data[key],
+                    introspectionResults: introspectionResults,
+                    typeName: resource.type.name + "CreateInput",
+                    field: key,
+                    mutationType: mutations_1.PRISMA_CONNECT
+                });
+                // If no fields in the object are valid, continue
+                if (Object.keys(fieldsToConnect).length === 0) {
+                    return acc;
+                }
+                // Else, connect the nodes
+                return __assign({}, acc, { data: __assign({}, acc.data, (_d = {}, _d[key] = (_e = {}, _e[mutations_1.PRISMA_CONNECT] = __assign({}, fieldsToConnect), _e), _d)) });
             }
-            // Else, connect the nodes
-            return __assign({}, acc, { data: __assign({}, acc.data, (_e = {}, _e[key] = (_f = {}, _f[mutations_1.PRISMA_CONNECT] = __assign({}, fieldsToConnect), _f), _e)) });
+            catch (error) {
+                return __assign({}, acc, { data: __assign({}, acc.data, (_f = {}, _f[key] = params.data[key], _f)) });
+            }
         }
         var type = introspectionResults.types.find(function (t) { return t.name === resource.type.name; });
         var isInField = type.fields.find(function (t) { return t.name === key; });
