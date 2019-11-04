@@ -72,7 +72,7 @@ exports.default = (function (options) {
             if (fetchType === react_admin_1.UPDATE_MANY) {
                 var ids = params.ids, otherParams_2 = __rest(params, ["ids"]);
                 return Promise.all(params.ids.map(function (id) {
-                    return graphQLDataProvider(react_admin_1.UPDATE, resource, __assign({ id: id }, otherParams_2));
+                    return graphQLDataProvider(react_admin_1.UPDATE, resource, __assign({ id: id, data: __assign({}, otherParams_2.data, { id: id }) }, otherParams_2));
                 })).then(function (results) {
                     return { data: results.map(function (_a) {
                             var data = _a.data;

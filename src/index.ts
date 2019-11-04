@@ -1,8 +1,8 @@
-import camelCase from 'lodash/camelCase';
-import merge from 'lodash/merge';
-import pluralize from 'pluralize';
+import camelCase from "lodash/camelCase";
+import merge from "lodash/merge";
+import pluralize from "pluralize";
 
-import buildDataProvider from 'ra-data-graphql';
+import buildDataProvider from "ra-data-graphql";
 import {
   CREATE,
   DELETE,
@@ -13,11 +13,11 @@ import {
   GET_ONE,
   UPDATE,
   UPDATE_MANY
-} from 'react-admin';
+} from "react-admin";
 
-import prismaBuildQuery from './buildQuery';
-import { Resource } from './constants/interfaces';
-import { ApolloClient, ApolloClientOptions } from 'apollo-client';
+import prismaBuildQuery from "./buildQuery";
+import { Resource } from "./constants/interfaces";
+import { ApolloClient, ApolloClientOptions } from "apollo-client";
 
 export const buildQuery = prismaBuildQuery;
 
@@ -46,43 +46,47 @@ export default (options: {
   client?: ApolloClient<any>;
   clientOptions?: ApolloClientOptions<any>;
 }) => {
-  return buildDataProvider(merge({}, defaultOptions, options)).then(
-    graphQLDataProvider => {
-      return (
-        fetchType: string,
-        resource: string,
-        params: { [key: string]: any }
-      ): Promise<any> => {
-        // Temporary work-around until we make use of updateMany and deleteMany mutations
-        if (fetchType === DELETE_MANY) {
-          const { ids, ...otherParams } = params;
-          return Promise.all(
-            params.ids.map((id: string) =>
-              graphQLDataProvider(DELETE, resource, {
-                id,
-                ...otherParams
-              })
-            )
-          ).then(results => {
-            return { data: results.map(({ data }: any) => data.id) };
-          });
-        }
+  return buildDataProvider(
+    merge({}, defaultOptions, options)
+  ).then(graphQLDataProvider => {
+    return (
+      fetchType: string,
+      resource: string,
+      params: { [key: string]: any }
+    ): Promise<any> => {
+      // Temporary work-around until we make use of updateMany and deleteMany mutations
+      if (fetchType === DELETE_MANY) {
+        const { ids, ...otherParams } = params;
+        return Promise.all(
+          params.ids.map((id: string) =>
+            graphQLDataProvider(DELETE, resource, {
+              id,
+              ...otherParams
+            })
+          )
+        ).then(results => {
+          return { data: results.map(({ data }: any) => data.id) };
+        });
+      }
 
-        if (fetchType === UPDATE_MANY) {
-          const { ids, ...otherParams } = params;
-          return Promise.all(
-            params.ids.map((id: string) =>
-              graphQLDataProvider(UPDATE, resource, {
-                id,
-                ...otherParams
-              })
-            )
-          ).then(results => {
-            return { data: results.map(({ data }: any) => data.id) };
-          });
-        }
-        return graphQLDataProvider(fetchType, resource, params);
-      };
-    }
-  );
+      if (fetchType === UPDATE_MANY) {
+        const { ids, ...otherParams } = params;
+        return Promise.all(
+          params.ids.map((id: string) =>
+            graphQLDataProvider(UPDATE, resource, {
+              id,
+              data: {
+                ...otherParams.data,
+                id
+              },
+              ...otherParams
+            })
+          )
+        ).then(results => {
+          return { data: results.map(({ data }: any) => data.id) };
+        });
+      }
+      return graphQLDataProvider(fetchType, resource, params);
+    };
+  });
 };
