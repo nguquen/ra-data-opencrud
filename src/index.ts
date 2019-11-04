@@ -74,12 +74,12 @@ export default (options: {
         return Promise.all(
           params.ids.map((id: string) =>
             graphQLDataProvider(UPDATE, resource, {
+              ...otherParams,
               id,
               data: {
                 ...otherParams.data,
                 id
-              },
-              ...otherParams
+              }
             })
           )
         ).then(results => {
