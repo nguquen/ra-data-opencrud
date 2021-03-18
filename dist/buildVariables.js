@@ -23,11 +23,11 @@ var mutations_1 = require("./constants/mutations");
 var buildGetListVariables = function (introspectionResults) { return function (resource, aorFetchType, params) {
     var filter = Object.keys(params.filter).reduce(function (acc, key) {
         var _a, _b, _c, _d, _e, _f, _g, _h;
-        if (key === "ids") {
+        if (key === 'ids') {
             return __assign({}, acc, { id_in: params.filter[key] });
         }
         if (Array.isArray(params.filter[key])) {
-            if (key.endsWith("_in")) {
+            if (key.endsWith('_in')) {
                 return __assign({}, acc, (_a = {}, _a[key] = params.filter[key], _a));
             }
             var type = introspectionResults.types.find(function (t) { return t.name === resource.type.name + "WhereInput"; });
@@ -47,9 +47,9 @@ var buildGetListVariables = function (introspectionResults) { return function (r
                 return __assign({}, acc, (_c = {}, _c[key + "_some"] = filter_1, _c));
             }
         }
-        var parts = key.split(".");
+        var parts = key.split('.');
         if (parts.length > 1) {
-            if (parts[1] == "id") {
+            if (parts[1] == 'id') {
                 var type = introspectionResults.types.find(function (t) { return t.name === resource.type.name + "WhereInput"; });
                 var filterSome = type.inputFields.find(function (t) { return t.name === parts[0] + "_some"; });
                 if (filterSome) {
@@ -58,10 +58,10 @@ var buildGetListVariables = function (introspectionResults) { return function (r
                 return __assign({}, acc, (_e = {}, _e[parts[0]] = { id: params.filter[key] }, _e));
             }
             var resourceField = resource.type.fields.find(function (f) { return f.name === parts[0]; });
-            if (resourceField.type.name === "Int") {
+            if (resourceField.type.name === 'Int') {
                 return __assign({}, acc, (_f = {}, _f[key] = parseInt(params.filter[key]), _f));
             }
-            if (resourceField.type.name === "Float") {
+            if (resourceField.type.name === 'Float') {
                 return __assign({}, acc, (_g = {}, _g[key] = parseFloat(params.filter[key]), _g));
             }
         }
@@ -99,7 +99,7 @@ var buildUpdateVariables = function (introspectionResults) { return function (re
     return Object.keys(params.data).reduce(function (acc, key) {
         var _a, _b, _c, _d, _e, _f, _g;
         // Put id field in a where object
-        if (key === "id" && params.data[key]) {
+        if (key === 'id' && params.data[key]) {
             return __assign({}, acc, { where: {
                     id: params.data[key]
                 } });
@@ -122,7 +122,7 @@ var buildUpdateVariables = function (introspectionResults) { return function (re
                 return __assign({}, acc, { data: __assign({}, acc.data, (_c = {}, _c[key] = params.data[key], _c)) });
             }
         }
-        if (isObject_1.default(params.data[key]) && inputType.kind !== "SCALAR") {
+        if (isObject_1.default(params.data[key]) && inputType.kind !== 'SCALAR') {
             try {
                 var fieldsToUpdate = buildReferenceField({
                     inputArg: params.data[key],
@@ -155,7 +155,7 @@ var buildCreateVariables = function (introspectionResults) { return function (re
     return Object.keys(params.data).reduce(function (acc, key) {
         var _a, _b, _c, _d, _e, _f, _g;
         // Put id field in a where object
-        if (key === "id" && params.data[key]) {
+        if (key === 'id' && params.data[key]) {
             return __assign({}, acc, { where: {
                     id: params.data[key]
                 } });
@@ -176,7 +176,7 @@ var buildCreateVariables = function (introspectionResults) { return function (re
                 return __assign({}, acc, { data: __assign({}, acc.data, (_c = {}, _c[key] = params.data[key], _c)) });
             }
         }
-        if (isObject_1.default(params.data[key]) && inputType.kind !== "SCALAR") {
+        if (isObject_1.default(params.data[key]) && inputType.kind !== 'SCALAR') {
             try {
                 var fieldsToConnect = buildReferenceField({
                     inputArg: params.data[key],
@@ -216,10 +216,9 @@ exports.default = (function (introspectionResults) { return function (resource, 
                 where: { id_in: params.ids }
             };
         case react_admin_1.GET_MANY_REFERENCE: {
-            var parts = params.target.split(".");
-            return {
-                where: (_a = {}, _a[parts[0]] = { id: params.id }, _a)
-            };
+            var variables = buildGetListVariables(introspectionResults)(resource, aorFetchType, params);
+            var parts = params.target.split('.');
+            return __assign({}, variables, { where: __assign({}, variables.where, (_a = {}, _a[parts[0]] = { id: params.id }, _a)) });
         }
         case react_admin_1.GET_ONE:
             return {
